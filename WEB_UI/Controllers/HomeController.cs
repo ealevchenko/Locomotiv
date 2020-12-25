@@ -14,5 +14,15 @@ namespace WEB_UI.Controllers
 
             return View();
         }
+
+        public ActionResult HeadDEPO()
+        {
+            ViewBag.Title = "Home Page";
+
+            return View();
+        }
+
     }
+
+
 }

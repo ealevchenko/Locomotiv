@@ -1,0 +1,92 @@
+﻿@{
+    ViewBag.Title = "АРМ Начальника ДЕПО";
+}
+
+@section styles {
+    @Styles.Render("~/DataTables/css")
+    @Styles.Render("~/DateTime/css")
+    @*<link rel="stylesheet" type="text/css" href="~/Content/report/report.css">*@
+}
+
+@section scripts {
+
+    @*<script>
+            $('body').addClass('img-header-global');
+            $('#page-width').addClass('average');
+        </script>*@
+
+    @Scripts.Render("~/bundles/Ajax")
+    @Scripts.Render("~/bundles/Moment")
+    @Scripts.Render("~/bundles/DataTables")
+    @Scripts.Render("~/bundles/DateTime")
+
+    <script src="~/Scripts/view/common.js" type="text/javascript"></script>
+    <script src="~/Scripts/view/api_locomotiv.js" type="text/javascript"></script>
+    <script src="~/Scripts/view/head_depo.js" type="text/javascript"></script>
+}
+
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card border-secondary mb-3">
+            <div class="card-header bg-secondary text-white">
+                <h3>Тепловозы в ДЕПО</h3>
+            </div>
+            <div class="card-body">
+                <table class='display compact hover row-border' id="list-locomotives" style="width:100%;"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card border-secondary mb-3">
+            <div class="card-header bg-secondary text-white">
+                <h3>Работы по тепловозу</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-xl-12">
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-12">
+                        <table class='display compact hover row-border' id="list-operations" style="width:100%;"></table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal_edit_action" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Править работы</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="col-xl-12 mb-1">
+                            <label for="validationCustom01">Ремонтируемый агрегат</label>
+                            <input type="text" class="form-control" id="validationCustom01" placeholder="Агрегат" value="Mark" required>
+                            <div class="invalid-feedback">
+                                Выберите агрегат.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -53,24 +53,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstract\IRepository.cs" />
     <Compile Include="Concrete\EFDbContext.cs" />
+    <Compile Include="Concrete\EFRepository.cs" />
+    <Compile Include="Concrete\EFTabActions.cs" />
+    <Compile Include="Concrete\EFTabRepairs.cs" />
     <Compile Include="Entities\LnkUDO.cs" />
-    <Compile Include="Model\Model1.cs" />
     <Compile Include="Entities\RefDamage.cs" />
     <Compile Include="Entities\RefNumLoko.cs" />
     <Compile Include="Entities\RefOperation.cs" />
     <Compile Include="Entities\RefSystems.cs" />
     <Compile Include="Entities\RefUnit.cs" />
-    <Compile Include="Model\sysdiagrams.cs" />
     <Compile Include="Entities\TabActions.cs" />
     <Compile Include="Entities\TabRepairs.cs" />
+    <Compile Include="Helper\Loc_Library.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Model\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -22,7 +22,7 @@ namespace EFLocomotive.Entities
 
         public DateTime DateTimeStartRepair { get; set; }
 
-        public DateTime DateTimeEndRepair { get; set; }
+        public DateTime? DateTimeEndRepair { get; set; }
 
         public virtual RefNumLoko RefNumLoko { get; set; }
 
