@@ -1,8 +1,57 @@
 ﻿$(document).ready(function () {
     var LOC_API = new LOCOMOTIVE_API(), // Создадим класс api-locomotive
-        mod_edit_action = $('#modal_edit_action').on('shown.bs.modal', function (e) {
-            // do something...
-        }),
+        panel = {
+            modal: $('#modal_edit_action'),
+            forms: $('.needs-validation').on("submit", function (event) {
+                event.preventDefault();
+                //var s = this.checkValidity();
+                // ref_unit
+                if (panel.ref_unit[0].checkValidity() === false) {
+                    panel.ref_unit.removeClass('is-valid').addClass('is-invalid');
+                } else {
+                    panel.ref_unit.removeClass('is-invalid').addClass('is-valid');
+                }
+                // ref_damage
+                if (panel.ref_damage[0].checkValidity() === false) {
+                    panel.ref_damage.removeClass('is-valid').addClass('is-invalid');
+                } else {
+                    panel.ref_damage.removeClass('is-invalid').addClass('is-valid');
+                }
+                // ref_operation
+                if (panel.ref_operation[0].checkValidity() === false) {
+                    panel.ref_operation.removeClass('is-valid').addClass('is-invalid');
+                } else {
+                    panel.ref_operation.removeClass('is-invalid').addClass('is-valid');
+                }
+                //human_hour
+                if (panel.human_hour[0].checkValidity() === false) {
+                    panel.human_hour.removeClass('is-valid').addClass('is-invalid');
+                } else {
+                    panel.human_hour.removeClass('is-invalid').addClass('is-valid');
+                }
+            }),
+            ref_unit: $('select#ref_unit'),
+            ref_damage: $('select#ref_damage'),
+            ref_operation: $('select#ref_operation'),
+            human_hour: $('input#human_hour'),
+            all_obj: null,
+            init: function () {
+                panel.all_obj = $([])
+                    .add(panel.ref_unit)
+                    .add(panel.ref_damage)
+                    .add(panel.ref_operation)
+                    .add(panel.human_hour);
+                panel.modal.on('shown.bs.modal', function (e) {
+
+                });
+            },
+            open: function () {
+                panel.all_obj.removeClass('is-valid is-invalid');
+                panel.forms.removeClass('was-validated');
+                panel.modal.modal('show');
+            },
+        },
+
         table_locomotives = {
             html_table: $('#list-locomotives'),
             obj: null,
@@ -169,7 +218,8 @@
                         {
                             text: 'Добавить',
                             action: function (e, dt, node, config) {
-                                mod_edit_action.modal('show');
+                                //mod_edit_action.modal('show');
+                                panel.open();
                             },
                             enabled: true
                         }
@@ -194,21 +244,24 @@
             },
         };
 
-    // Инициализация
-    // Fetch all the forms we want to apply custom Bootstrap validation styles to
-    var forms = document.getElementsByClassName('needs-validation');
-    // Loop over them and prevent submission
-    var validation = Array.prototype.filter.call(forms, function (form) {
-        form.addEventListener('submit', function (event) {
-            if (form.checkValidity() === false) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            form.classList.add('was-validated');
-        }, false);
-    });
+    //// Инициализация
+    //// Fetch all the forms we want to apply custom Bootstrap validation styles to
+    //var forms = $('.needs-validation')
+    //    .on("submit", function (event) {
+    //        event.preventDefault();
+    //    });
+    //// Loop over them and prevent submission
+    //var validation = Array.prototype.filter.call(forms, function (form) {
+    //    form.addEventListener('submit', function (event) {
+    //        if (form.checkValidity() === false) {
+    //            event.preventDefault();
+    //            event.stopPropagation();
+    //        }
+    //        form.classList.add('was-validated');
+    //    }, false);
+    //});
 
-
+    panel.init();
     table_locomotives.init();
     table_operations.init();
     table_locomotives.load();

@@ -74,10 +74,37 @@
                 <div class="modal-body">
                     <div class="form-row">
                         <div class="col-xl-12 mb-1">
-                            <label for="validationCustom01">Ремонтируемый агрегат</label>
-                            <input type="text" class="form-control" id="validationCustom01" placeholder="Агрегат" value="Mark" required>
+                            <label for="ref_unit" class="col-form-label">Ремонтируемый агрегат:</label>
+                            <select class="form-control" id="ref_unit" name="ref_unit" required></select>
                             <div class="invalid-feedback">
-                                Выберите агрегат.
+                                Укажите агрегат!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-xl-12 mb-1">
+                            <label for="ref_damage" class="col-form-label">Обнаруженная неисправность:</label>
+                            <select class="form-control" id="ref_damage" name="ref_damage" required></select>
+                            <div class="invalid-feedback">
+                                Укажите неисправность!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-xl-12 mb-1">
+                            <label for="ref_operation" class="col-form-label">Выполненная операция:</label>
+                            <select class="form-control" id="ref_operation" name="ref_operation" required></select>
+                            <div class="invalid-feedback">
+                                Укажите операцию!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-xl-6 mb-1">
+                            <label for="human_hour" class="col-form-label">Трудозатраты:</label>
+                            <input type="number" class="form-control" id="human_hour" name="human_hour" required>
+                            <div class="invalid-feedback">
+                                Укажите трудозатраты!
                             </div>
                         </div>
                     </div>
