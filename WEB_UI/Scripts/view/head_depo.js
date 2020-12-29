@@ -41,6 +41,22 @@
                     .add(panel.ref_damage)
                     .add(panel.ref_operation)
                     .add(panel.human_hour);
+                // настроим выбор станций
+                panel.ref_damage = cd_initSelect(
+                    panel.ref_damage,
+                    list_damage,
+                    function (data) {
+                        var option = { value: data.idDamage, text: data.Damage, disabled: false };
+                        return option;
+                    },
+                    -1,
+                    function (event, ui) {
+                        event.preventDefault();
+                        // Обработать выбор
+                        var id = Number($(this).val());
+                    },
+                    null);
+
                 panel.modal.on('shown.bs.modal', function (e) {
 
                 });
@@ -51,7 +67,20 @@
                 panel.modal.modal('show');
             },
         },
-
+        list_damage = [],
+        loadReference = function (callback) {
+            LockScreen('Загрузка справочников...');
+            var count = 1;
+            LOC_API.getRefDamage(function (result_damage) {
+                list_damage = result_damage;
+                count -= 1;
+                if (count === 0) {
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                }
+            });
+        },
         table_locomotives = {
             html_table: $('#list-locomotives'),
             obj: null,
@@ -260,9 +289,13 @@
     //        form.classList.add('was-validated');
     //    }, false);
     //});
+    // Загрузим справочники
+    loadReference(function () {
+        panel.init();
+        table_locomotives.init();
+        table_operations.init();
+        table_locomotives.load();
+    });
 
-    panel.init();
-    table_locomotives.init();
-    table_operations.init();
-    table_locomotives.load();
+
 });

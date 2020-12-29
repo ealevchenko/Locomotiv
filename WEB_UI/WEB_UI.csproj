@@ -165,6 +165,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\RefDamageController.cs" />
     <Compile Include="Controllers\TabActionsController .cs" />
     <Compile Include="Controllers\TabRepairsController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />

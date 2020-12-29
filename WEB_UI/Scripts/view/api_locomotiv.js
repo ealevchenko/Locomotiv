@@ -81,3 +81,27 @@ LOCOMOTIVE_API.prototype.getTabActionsOfID = function (id, callback) {
         },
     });
 };
+// Загрузка справочника "Неисправностей"
+LOCOMOTIVE_API.prototype.getRefDamage = function (callback) {
+    $.ajax({
+        type: 'GET',
+        url: '../../api/ref_damage/all',
+        async: true,
+        dataType: 'json',
+        beforeSend: function () {
+            AJAXBeforeSend();
+        },
+        success: function (data) {
+            if (typeof callback === 'function') {
+                callback(data);
+            }
+        },
+        error: function (x, y, z) {
+            OnAJAXError("LOCOMOTIVE_API.getRefDamage", x, y, z);
+        },
+        complete: function () {
+            AJAXComplete();
+        },
+    });
+};
+
