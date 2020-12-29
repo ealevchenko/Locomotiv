@@ -9,14 +9,12 @@ namespace EFLocomotive.Entities
     public partial class TabActions
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int idAction { get; set; }
 
         public int IDRepair { get; set; }
 
         public int IDLnkUDO { get; set; }
 
-        [Column(TypeName = "date")]
         public DateTime DateActiion { get; set; }
 
         public float? HRresourse { get; set; }

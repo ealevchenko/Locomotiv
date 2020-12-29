@@ -55,9 +55,15 @@
   <ItemGroup>
     <Compile Include="Abstract\IRepository.cs" />
     <Compile Include="Concrete\EFDbContext.cs" />
+    <Compile Include="Concrete\EFRefNumLoko.cs" />
+    <Compile Include="Concrete\EFRefOperation.cs" />
+    <Compile Include="Concrete\EFRefSystems.cs" />
+    <Compile Include="Concrete\EFRefUnit.cs" />
     <Compile Include="Concrete\EFRepository.cs" />
+    <Compile Include="Concrete\EFRefDamage.cs" />
     <Compile Include="Concrete\EFTabActions.cs" />
     <Compile Include="Concrete\EFTabRepairs.cs" />
+    <Compile Include="Helper\Loc_Library.cs" />
     <Compile Include="Entities\LnkUDO.cs" />
     <Compile Include="Entities\RefDamage.cs" />
     <Compile Include="Entities\RefNumLoko.cs" />
@@ -66,7 +72,6 @@
     <Compile Include="Entities\RefUnit.cs" />
     <Compile Include="Entities\TabActions.cs" />
     <Compile Include="Entities\TabRepairs.cs" />
-    <Compile Include="Helper\Loc_Library.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

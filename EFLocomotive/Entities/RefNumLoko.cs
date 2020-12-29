@@ -16,7 +16,6 @@ namespace EFLocomotive.Entities
         }
 
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int idNumLoko { get; set; }
 
         [Required]

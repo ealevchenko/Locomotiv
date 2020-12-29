@@ -43,8 +43,17 @@ namespace EFLocomotive.Helper
                 DateActiion = a.DateActiion,
                 HRresourse = a.HRresourse,
                 LnkUDO = a.LnkUDO,
-                TabRepairs = a.TabRepairs,
+                TabRepairs = a.TabRepairs, 
+            };
+        }
 
+        public static RefDamage GetRefDamage(this RefDamage d)
+        {
+            if (d == null) return null;
+            return new RefDamage()
+            {
+                idDamage = d.idDamage,
+                Damage = d.Damage
             };
         }
     }

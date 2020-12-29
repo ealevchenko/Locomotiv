@@ -16,7 +16,6 @@ namespace EFLocomotive.Entities
         }
 
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int idLinkUDO { get; set; }
 
         public int IDUnit { get; set; }

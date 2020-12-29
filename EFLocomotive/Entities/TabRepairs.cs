@@ -15,7 +15,6 @@ namespace EFLocomotive.Entities
         }
 
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int idRepair { get; set; }
 
         public int IDNumLoko { get; set; }
