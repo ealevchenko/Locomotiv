@@ -1,7 +1,11 @@
 ﻿$(document).ready(function () {
     var LOC_API = new LOCOMOTIVE_API(), // Создадим класс api-locomotive
         panel = {
-            modal: $('#modal_edit_action'),
+            modal: $('#modal_edit_action').modal({
+                backdrop: 'static',
+                keyboard: false,
+                show:false
+            }),
             forms: $('.needs-validation').on("submit", function (event) {
                 event.preventDefault();
                 //var s = this.checkValidity();
@@ -41,7 +45,23 @@
                     .add(panel.ref_damage)
                     .add(panel.ref_operation)
                     .add(panel.human_hour);
-                // настроим выбор станций
+                // настроим выбор агрегатов
+                panel.ref_unit = cd_initSelect(
+                    panel.ref_unit,
+                    list_unit,
+                    function (data) {
+                        var option = { value: data.idUnit, text: data.Unit, disabled: false };
+                        return option;
+                    },
+                    -1,
+                    function (event, ui) {
+                        event.preventDefault();
+                        // Обработать выбор
+                        var id = Number($(this).val());
+                        panel.select(id, Number(panel.ref_damage.val()), Number(panel.ref_operation.val()));
+                    },
+                    null);
+                // настроим выбор неисправностей
                 panel.ref_damage = cd_initSelect(
                     panel.ref_damage,
                     list_damage,
@@ -54,6 +74,23 @@
                         event.preventDefault();
                         // Обработать выбор
                         var id = Number($(this).val());
+                        panel.select(Number(panel.ref_unit.val()), id, Number(panel.ref_operation.val()));
+                    },
+                    null);
+                // настроим выбор операций
+                panel.ref_operation = cd_initSelect(
+                    panel.ref_operation,
+                    list_operation,
+                    function (data) {
+                        var option = { value: data.idOperation, text: data.Operation, disabled: false };
+                        return option;
+                    },
+                    -1,
+                    function (event, ui) {
+                        event.preventDefault();
+                        // Обработать выбор
+                        var id = Number($(this).val());
+                        panel.select(Number(panel.ref_unit.val()), Number(panel.ref_damage.val()), id);
                     },
                     null);
 
@@ -66,13 +103,164 @@
                 panel.forms.removeClass('was-validated');
                 panel.modal.modal('show');
             },
+            // выбран агрегат
+            select: function (id_unit, id_damage, id_operation) {
+                var link = list_lnk_udo;
+                if (id_unit > 0) {
+                    link = link.filter(function (i) {
+                        return (i.IDUnit === id_unit);
+                    });
+                    // Скорректируем (если по агрегату нет правила тогда показать все)
+                    //link = links && links.length > 0 ? links : list_lnk_udo;
+                }
+                if (id_damage > 0) {
+                    link = link.filter(function (i) {
+                        return (i.IDDamage === id_damage);
+                    });
+                }
+                if (id_operation > 0) {
+                    link = link.filter(function (i) {
+                        return (i.IDOperation === id_operation);
+                    });
+                }
+
+                panel.update_unit(id_unit, link);
+
+                panel.update_damage(id_damage, link);
+
+                panel.update_operation(id_operation, link);
+
+                if (link && link.length === 1 && id_unit > 0 && id_damage > 0 && id_operation > 0) {
+                    panel.human_hour.val(Number(link[0].HumanHour));
+                } else {
+                    panel.human_hour.val('');
+                }
+            },
+            //
+            update_unit: function (id, link) {
+                var list = [];
+                var id_exist = false;
+                if (id >0 && link && link.length > 0) {
+                    $.each(link, function (i, el) {
+                        // Добавляем только уникальные
+                        var idUnit = list.find(function (o) {
+                            return o.idUnit === el.RefUnit.idUnit;
+                        });
+                        if (!idUnit) {
+                            list.push(el.RefUnit);
+                            if (el.RefUnit.idUnit === id) {
+                                id_exist = true;
+                            }
+                        }
+                    });
+                } else {
+                    id_exist = true;
+                    list = list_unit;
+                }
+
+                panel.ref_unit = cd_updateSelect(
+                    panel.ref_unit,
+                    list,
+                    function (data) {
+                        var option = { value: data.idUnit, text: data.Unit, disabled: false };
+                        return option;
+                    },
+                    id_exist ? id>0 ? id: -1 : -1,
+                    null);
+            },
+            //
+            update_damage: function (id, link) {
+                var list = [];
+                var id_exist = false;
+                $.each(link, function (i, el) {
+                    // Добавляем только уникальные
+                    var idRepair = list.find(function (o) {
+                        return o.idDamage === el.RefDamage.idDamage;
+                    });
+                    if (!idRepair) {
+                        list.push(el.RefDamage);
+                        if (el.RefDamage.idDamage === id) {
+                            id_exist = true;
+                        }
+                    }
+                });
+                panel.ref_damage = cd_updateSelect(
+                    panel.ref_damage,
+                    list,
+                    function (data) {
+                        var option = { value: data.idDamage, text: data.Damage, disabled: false };
+                        return option;
+                    },
+                    id_exist ? id : -1,
+                    null);
+            },
+            //
+            update_operation: function (id, link) {
+                var list = [];
+                var id_exist = false;
+                $.each(link, function (i, el) {
+                    // Добавляем только уникальные
+                    var IDOperation = list.find(function (o) {
+                        return o.idOperation === el.RefOperation.idOperation;
+                    });
+                    if (!IDOperation) {
+                        list.push(el.RefOperation);
+                        if (el.RefOperation.idOperation === id) {
+                            id_exist = true;
+                        }
+                    }
+                });
+                panel.ref_operation = cd_updateSelect(
+                    panel.ref_operation,
+                    list,
+                    function (data) {
+                        var option = { value: data.idOperation, text: data.Operation, disabled: false };
+                        return option;
+                    },
+                    id_exist ? id : -1,
+                    null);
+            },
         },
+        list_unit = [],
         list_damage = [],
+        list_operation = [],
+        list_lnk_udo = [],
         loadReference = function (callback) {
             LockScreen('Загрузка справочников...');
-            var count = 1;
+            var count = 4;
+            // Загрузим Units
+            LOC_API.getRefUnit(function (result_unit) {
+                list_unit = result_unit;
+                count -= 1;
+                if (count === 0) {
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                }
+            });
+            // Загрузим неисправности
             LOC_API.getRefDamage(function (result_damage) {
                 list_damage = result_damage;
+                count -= 1;
+                if (count === 0) {
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                }
+            });
+            // Загрузим операции
+            LOC_API.getRefOperation(function (result_operation) {
+                list_operation = result_operation;
+                count -= 1;
+                if (count === 0) {
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                }
+            });
+            // Загрузим привязки агрегатов к неисправностям и операциям
+            LOC_API.getLnkUDO(function (result_lnk_udo) {
+                list_lnk_udo = result_lnk_udo;
                 count -= 1;
                 if (count === 0) {
                     if (typeof callback === 'function') {

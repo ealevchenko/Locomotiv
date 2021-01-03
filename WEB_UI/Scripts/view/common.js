@@ -51,9 +51,9 @@ var LockScreenOff = function () {
 var cd_initSelect = function (obj_select, data, callback_option, value_select, event_change, exceptions_value) {
     var options = [];
     // Проверка выбор неопределен
-    if (value_select === -1) {
+    //if (value_select === -1) {
         options.push("<option value=''>Выберите...</option>");
-    }
+    //}
     if (data !== null) {
         for (i = 0, count_data_select = data.length; i < count_data_select; i++) {
             var option = { value: data[i].value, text: data[i].text, disabled: data[i].disabled };
@@ -78,17 +78,12 @@ var cd_initSelect = function (obj_select, data, callback_option, value_select, e
     return obj_select;
 };
 
-var cd_updateSelect = function (obj_select, property, data, callback_option, value_select, exceptions_value) {
+var cd_updateSelect = function (obj_select, data, callback_option, value_select, exceptions_value) {
     var options = [];
-    var lang = 'ru';
-    //var select = true;
-    if (property.lang) {
-        lang = property.lang;
-    }
     // Проверка выбор неопределен
-    if (value_select === -1) {
-        options.push("<option value='-1' >" + (lang === 'en' ? 'Select...' : 'Выберите...') + "</option>");
-    }
+    //if (value_select === -1) {
+        options.push("<option value=''>Выберите...</option>");
+    //}
     if (data !== null) {
         for (i = 0, count_data_select = data.length; i < count_data_select; i++) {
             var option = { value: data[i].value, text: data[i].text, disabled: data[i].disabled };
@@ -108,7 +103,7 @@ var cd_updateSelect = function (obj_select, property, data, callback_option, val
         }
     }
     obj_select.empty();
-    obj_select.append(options.join("")).val(value_select);
+    obj_select.append(options.join("")).val(value_select >= 0 ? value_select : '');
     return obj_select;
 };
 //

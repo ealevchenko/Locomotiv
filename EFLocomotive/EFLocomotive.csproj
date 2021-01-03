@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Abstract\IRepository.cs" />
     <Compile Include="Concrete\EFDbContext.cs" />
+    <Compile Include="Concrete\EFLnkUDO.cs" />
     <Compile Include="Concrete\EFRefNumLoko.cs" />
     <Compile Include="Concrete\EFRefOperation.cs" />
     <Compile Include="Concrete\EFRefSystems.cs" />
