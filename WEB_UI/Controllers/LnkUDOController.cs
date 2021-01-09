@@ -49,13 +49,13 @@ namespace WEB_UI.Controllers
             try
             {
                 EFLnkUDO ef_act = new EFLnkUDO(new EFDbContext());
-                List<LnkUDO> list = ef_act
+                LnkUDO link = ef_act
                     .Context
                     .Where(d=>d.idLinkUDO == id)
                     .ToList()
                     .Select(m => m.GetLnkUDO())
-                    .ToList();
-                return Ok(list);
+                    .FirstOrDefault();
+                return Ok(link);
             }
             catch (Exception e)
             {

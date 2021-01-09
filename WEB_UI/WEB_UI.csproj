@@ -408,6 +408,7 @@
     <Content Include="Scripts\view\api_locomotiv.js" />
     <Content Include="Scripts\view\common.js" />
     <Content Include="Scripts\view\head_depo.js" />
+    <Content Include="Scripts\view\shift_supervisor.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -435,6 +436,7 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Home\HeadDEPO.cshtml" />
+    <Content Include="Views\Home\ShiftSupervisor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

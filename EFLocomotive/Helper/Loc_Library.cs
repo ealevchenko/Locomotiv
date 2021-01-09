@@ -42,8 +42,8 @@ namespace EFLocomotive.Helper
                 IDLnkUDO = a.IDLnkUDO,
                 DateActiion = a.DateActiion,
                 HRresourse = a.HRresourse,
-                LnkUDO = a.LnkUDO,
-                TabRepairs = a.TabRepairs,
+                LnkUDO = a.LnkUDO.GetLnkUDO(),
+                TabRepairs = a.TabRepairs.GetTabRepairs(),
             };
         }
 

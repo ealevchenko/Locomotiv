@@ -26,7 +26,6 @@ var language_table = function () {
     }
 };
 
-//==============================================================================================
 /* ----------------------------------------------------------
     Блокировка экрана
 -------------------------------------------------------------*/
@@ -43,7 +42,7 @@ var LockScreenOff = function () {
     if (lock)
         lock.className = 'LockOff';
 };
-//==============================================================================================
+
 /* ----------------------------------------------------------
     Компоненты UI
 -------------------------------------------------------------*/
@@ -77,7 +76,7 @@ var cd_initSelect = function (obj_select, data, callback_option, value_select, e
     obj_select.on("change", event_change);
     return obj_select;
 };
-
+// Обновление компонента Select 
 var cd_updateSelect = function (obj_select, data, callback_option, value_select, exceptions_value) {
     var options = [];
     // Проверка выбор неопределен
@@ -106,7 +105,7 @@ var cd_updateSelect = function (obj_select, data, callback_option, value_select,
     obj_select.append(options.join("")).val(value_select >= 0 ? value_select : '');
     return obj_select;
 };
-//
+// Инициализация компонента DateTimeRange
 var cd_initDateTimeRangePicker = function (obj_select, property, close_function) {
     var dtrp = {
         obj: null,
@@ -174,3 +173,53 @@ var cd_initDateTimeRangePicker = function (obj_select, property, close_function)
     dtrp.init(obj_select, property, close_function);
     return dtrp;
 }
+//---------------------------------------------------------------
+// Врнуть значение Input с проверкой
+var get_input_number_value = function (obj) {
+    if (obj) {
+        return obj.val() !== '' ? Number(obj.val()) : null;
+    }
+    return null;
+};
+
+
+
+/* ----------------------------------------------------------
+    ALERT - Функции вывода сообщений
+-------------------------------------------------------------*/
+var ALERT = function (alert) {
+    this.alert = alert;
+};
+// Очистить сообщения
+ALERT.prototype.clear_message = function () {
+    if (this.alert) {
+        this.alert.hide().text('').removeClass('alert-success alert-warning alert-danger');
+    }
+};
+// Вывести сообщение об ошибке
+ALERT.prototype.out_error_message = function (message) {
+    if (this.alert) {
+        this.alert.show().removeClass('alert-success alert-warning').addClass('alert-danger');
+        if (message) {
+            this.alert.append(message).append($('<br />'));
+        }
+    }
+};
+// Вывести сообщение об ошибке
+ALERT.prototype.out_warning_message = function (message) {
+    if (this.alert) {
+        this.alert.show().removeClass('alert-success alert-danger').addClass('alert-warning');
+        if (message) {
+            this.alert.append(message).append($('<br />'));
+        }
+    }
+};
+// Вывести информационное сообщение
+ALERT.prototype.out_info_message = function (message) {
+    if (this.alert) {
+        this.alert.show().removeClass('alert-danger alert-warning').addClass('alert-success');
+        if (message) {
+            this.alert.append(message).append($('<br />'));
+        }
+    }
+};

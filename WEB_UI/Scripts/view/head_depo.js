@@ -1,14 +1,48 @@
 ﻿$(document).ready(function () {
     var LOC_API = new LOCOMOTIVE_API(), // Создадим класс api-locomotive
+        // Панель подтверждения операций
+        confirm = {
+            callback: null,
+            result: false,
+            modal: $('#modal_confirm').modal({
+                backdrop: 'static',
+                keyboard: false,
+                show: false
+            }),
+            bt_ok: $('button#ok').on("click", function (event) {
+                confirm.result = true;
+                confirm.modal.modal('hide');
+            }),
+            //forms: $('.needs-validation').on("submit", function (event) {
+            //    event.preventDefault();
+            //    confirm.result = true;
+            //}),
+            init: function () {
+                confirm.modal.on('hidden.bs.modal', function (e) {
+                    if (typeof confirm.callback === 'function') {
+                        confirm.callback(confirm.result);
+                    }
+                });
+            },
+            open: function (title, message, callback) {
+                $('#title_confirm').text(title);
+                $('#message_confirm').text(message);
+                confirm.callback = callback;
+                confirm.modal.modal('show');
+            },
+
+        },
+        // Панель правка работ по тепловозу
         panel = {
+            alert: null,
             modal: $('#modal_edit_action').modal({
                 backdrop: 'static',
                 keyboard: false,
-                show:false
+                show: false
             }),
             forms: $('.needs-validation').on("submit", function (event) {
                 event.preventDefault();
-                //var s = this.checkValidity();
+                alert.clear_message();
                 // ref_unit
                 if (panel.ref_unit[0].checkValidity() === false) {
                     panel.ref_unit.removeClass('is-valid').addClass('is-invalid');
@@ -33,18 +67,91 @@
                 } else {
                     panel.human_hour.removeClass('is-invalid').addClass('is-valid');
                 }
+                if (this.checkValidity() === false) {
+                    alert.out_error_message("Ошибка заполнения формы!");
+                    event.preventDefault();
+                    event.stopPropagation();
+                } else {
+                    // Ок, сохраним
+                    if (panel.id === null) {
+                        // Добавить
+                        if (panel.select_id_link_udo !== null) {
+                            var value = {
+                                idAction: 0,
+                                IDRepair: table_locomotives.select_id_repair,
+                                IDLnkUDO: panel.select_id_link_udo,
+                                DateActiion: moment(), // текущая дата
+                                HRresourse: get_input_number_value(panel.human_hour)
+                            }
+                            // Добавим запись
+                            LOC_API.postTabActions(value, function (result_add) {
+                                if (result_add !== null && result_add > 0) {
+                                    // Ок, добавили строку
+                                    panel.modal.modal('hide'); // Закроем
+                                    table_operations.load(table_locomotives.select_id_repair);
+                                } else {
+                                    // Error, ошибка.
+                                    alert.out_error_message("Ошибка добавления записи «Работа по тепловозу»");
+                                }
+                            });
+                        } else {
+                            // Ошибка, нет выбраной строки
+                            alert.out_warning_message("Привязка агрегат/неисправность/работа не соответсвует справочнику!");
+                        }
+                    } else {
+                        // Править
+                        if (panel.select_action !== null) {
+                            if (panel.select_id_link_udo !== null) {
+                                // Выбрано правило
+                                var value = {
+                                    idAction: panel.select_action.idAction,
+                                    IDRepair: panel.select_action.IDRepair,
+                                    IDLnkUDO: panel.select_id_link_udo,
+                                    DateActiion: panel.select_action.DateActiion, // текущая дата
+                                    HRresourse: get_input_number_value(panel.human_hour)
+                                }
+                                // Добавим запись
+                                LOC_API.putTabActions(value, function (result_upd) {
+                                    if (result_upd !== null && result_upd > 0) {
+                                        // Ок, обновили строку
+                                        panel.modal.modal('hide'); // Закроем
+                                        table_operations.load(table_locomotives.select_id_repair);
+                                    } else {
+                                        // Error, ошибка.
+                                        alert.out_error_message("Ошибка обновления записи «Работа по тепловозу»");
+                                    }
+                                });
+                            } else {
+                                // Ошибка, нет выбраной строки
+                                alert.out_warning_message("Привязка агрегат/неисправность/работа не соответсвует справочнику!");
+                            }
+
+                        } else {
+                            // Ошибка, нет выбраной строки
+                            alert.out_error_message("Ошибка обновления записи «Работа по тепловозу»");
+                        }
+
+                    }
+
+
+
+                }
             }),
+            id: null,                                       // id-работы переданое в окно правки
+            select_action: null,                            // Выбранная строека работа по тепловозу
+            select_id_link_udo: null,                       // Выбраное id - работы в окне
             ref_unit: $('select#ref_unit'),
             ref_damage: $('select#ref_damage'),
             ref_operation: $('select#ref_operation'),
             human_hour: $('input#human_hour'),
             all_obj: null,
             init: function () {
-                panel.all_obj = $([])
-                    .add(panel.ref_unit)
-                    .add(panel.ref_damage)
-                    .add(panel.ref_operation)
-                    .add(panel.human_hour);
+                alert = new ALERT($('div#modal-alert')),// Создадим класс ALERTG
+                    panel.all_obj = $([])
+                        .add(panel.ref_unit)
+                        .add(panel.ref_damage)
+                        .add(panel.ref_operation)
+                        .add(panel.human_hour);
                 // настроим выбор агрегатов
                 panel.ref_unit = cd_initSelect(
                     panel.ref_unit,
@@ -98,10 +205,44 @@
 
                 });
             },
-            open: function () {
+            open: function (id) {
+                panel.id = id;
+                alert.clear_message();
                 panel.all_obj.removeClass('is-valid is-invalid');
                 panel.forms.removeClass('was-validated');
-                panel.modal.modal('show');
+                if (panel.id !== null) {
+                    // Править
+                    LOC_API.getTabActionsOfID(panel.id, function (result_action) {
+                        panel.select_action = result_action;
+                        if (result_action !== null) {
+                            // Найти привязку
+                            panel.human_hour.val(result_action.HRresourse);
+                            LOC_API.getLnkUDOOfID(result_action.IDLnkUDO, function (result_link) {
+                                if (result_link !== null) {
+                                    panel.select(result_link.IDUnit, result_link.IDDamage, result_link.IDOperation);
+                                    panel.human_hour.val(result_action.HRresourse); // Вставим в конце так как заполняется шаблон в начале
+                                    // Открыть окно
+                                    panel.modal.modal('show');
+                                } else {
+                                    // Нет привязки
+                                }
+                            });
+
+                        } else {
+                            // Нет работы
+                        }
+                    });
+                } else {
+                    // Добавить
+                    panel.ref_unit.val('');
+                    panel.ref_damage.val('');
+                    panel.ref_operation.val('');
+                    panel.human_hour.val('');
+                    panel.select(0, 0, 0);
+                    // Открыть окно
+                    panel.modal.modal('show');
+                }
+
             },
             // выбран агрегат
             select: function (id_unit, id_damage, id_operation) {
@@ -132,15 +273,17 @@
 
                 if (link && link.length === 1 && id_unit > 0 && id_damage > 0 && id_operation > 0) {
                     panel.human_hour.val(Number(link[0].HumanHour));
+                    panel.select_id_link_udo = link[0].idLinkUDO; // id работы выброаное в окне
                 } else {
                     panel.human_hour.val('');
+                    panel.select_id_link_udo = null; // id работы сброшено
                 }
             },
             //
             update_unit: function (id, link) {
                 var list = [];
                 var id_exist = false;
-                if (id >0 && link && link.length > 0) {
+                if (id > 0 && link && link.length > 0) {
                     $.each(link, function (i, el) {
                         // Добавляем только уникальные
                         var idUnit = list.find(function (o) {
@@ -165,7 +308,7 @@
                         var option = { value: data.idUnit, text: data.Unit, disabled: false };
                         return option;
                     },
-                    id_exist ? id>0 ? id: -1 : -1,
+                    id_exist ? id > 0 ? id : -1 : -1,
                     null);
             },
             //
@@ -221,10 +364,12 @@
                     null);
             },
         },
+        // Справочники
         list_unit = [],
         list_damage = [],
         list_operation = [],
         list_lnk_udo = [],
+        // Загрузка справочников
         loadReference = function (callback) {
             LockScreen('Загрузка справочников...');
             var count = 4;
@@ -269,10 +414,12 @@
                 }
             });
         },
+        // Таблица список локомотивов в ремонте
         table_locomotives = {
             html_table: $('#list-locomotives'),
             obj: null,
             list: null,
+            select_id_repair: null,             // Выбраная строка локомотива в ремонте
             // Инициализировать таблицу
             init: function () {
                 table_locomotives.obj = this.html_table.DataTable({
@@ -340,26 +487,50 @@
                             }
                         },
                         {
-                            text: 'Выполнить работы',
-                            action: function (e, dt, node, config) {
-
-                            },
-                            enabled: false
-                        },
-                        {
                             text: 'Выдать тепловоз',
                             action: function (e, dt, node, config) {
-
+                                confirm.open('Выдать?', 'Вывести тепловоз из ремонта?', function (result) {
+                                    if (result) {
+                                        // Выдать
+                                        LOC_API.putCloseTabRepairs(table_locomotives.select_id_repair, function (result_close) {
+                                            if (result_close !== null && result_close > 0) {
+                                                // Ок, удалили строку
+                                                // сбросим выбор и кнопки
+                                                table_locomotives.select_id_repair = null;
+                                                table_locomotives.obj.button(2).enable(false);
+                                                table_operations.select_id_action = null;
+                                                table_operations.obj.button(3).enable(false);
+                                                table_operations.obj.button(4).enable(false);
+                                                //panel.modal.modal('hide'); // Закроем
+                                                table_locomotives.load();
+                                            } else {
+                                                // Error, ошибка.
+                                                alert.out_error_message("Ошибка закрытия записи «Тепловоз в ремонте»");
+                                            }
+                                        });
+                                    }
+                                });
                             },
                             enabled: false
                         }
                     ],
                 }).on('select', function (e, dt, type, indexes) {
-                    var index_way = indexes && indexes.length > 0 ? indexes[0] : null;
-                    //// получим путь
                     var rowData = table_locomotives.obj.rows(indexes).data().toArray();
                     var id = rowData && rowData.length > 0 ? rowData[0].idRepair : null;
-                    table_operations.load(id);
+                    table_locomotives.select_id_repair = id; // Запомним выбраную строку
+                    // сбросим выбор и кнопки
+                    table_operations.select_id_action = null;
+                    table_operations.obj.button(3).enable(false);
+                    table_operations.obj.button(4).enable(false);
+                    // Обновим кнопку добавить
+                    if (table_locomotives.select_id_repair > 0) {
+                        table_operations.obj.button(2).enable(true);
+                        table_locomotives.obj.button(2).enable(true);
+                    } else {
+                        table_operations.obj.button(2).enable(false);
+                        table_locomotives.obj.button(2).enable(false);
+                    }
+                    table_operations.load(table_locomotives.select_id_repair);
                 });
             },
             // Показать таблицу с данными
@@ -381,10 +552,12 @@
                 });
             },
         },
+        // Таблица список работ по локомотивову в ремонте
         table_operations = {
             html_table: $('#list-operations'),
             obj: null,
             list: null,
+            select_id_action: null, // Выбраная работа
             // Инициализировать таблицу
             init: function () {
                 table_operations.obj = this.html_table.DataTable({
@@ -395,7 +568,7 @@
                     "info": false,
                     select: {
                         style: "single",
-                        toggleable: false,
+                        //toggleable: false,
                     },
                     "autoWidth": true,
                     //"filter": true,
@@ -416,6 +589,36 @@
                             },
                             title: 'Дата операции', width: "150px", orderable: true, searchable: false
                         },
+                        {
+                            data: function (row, type, val, meta) {
+                                var LnkUDO = row.LnkUDO ? row.LnkUDO : null;
+                                var RefUnit = LnkUDO && LnkUDO.RefUnit ? LnkUDO.RefUnit : null;
+                                return RefUnit ? RefUnit.Unit : null;
+                            },
+                            title: 'Агрегат', width: "150px", orderable: true, searchable: false
+                        },
+                        {
+                            data: function (row, type, val, meta) {
+                                var LnkUDO = row.LnkUDO ? row.LnkUDO : null;
+                                var RefDamage = LnkUDO && LnkUDO.RefDamage ? LnkUDO.RefDamage : null;
+                                return RefDamage ? RefDamage.Damage : null;
+                            },
+                            title: 'Неисправность', width: "150px", orderable: true, searchable: false
+                        },
+                        {
+                            data: function (row, type, val, meta) {
+                                var LnkUDO = row.LnkUDO ? row.LnkUDO : null;
+                                var RefOperation = LnkUDO && LnkUDO.RefOperation ? LnkUDO.RefOperation : null;
+                                return RefOperation ? RefOperation.Operation : null;
+                            },
+                            title: 'Операция', width: "150px", orderable: true, searchable: false
+                        },
+                        {
+                            data: function (row, type, val, meta) {
+                                return row.HRresourse;
+                            },
+                            title: 'Трудозатраты (ч/час)', width: "150px", orderable: true, searchable: false
+                        },
                     ],
                     dom: 'Bfrtip',
                     stateSave: false,
@@ -435,13 +638,63 @@
                         {
                             text: 'Добавить',
                             action: function (e, dt, node, config) {
-                                //mod_edit_action.modal('show');
-                                panel.open();
+                                panel.open(null);
                             },
-                            enabled: true
+                            enabled: false
+                        },
+                        {
+                            text: 'Править',
+                            action: function (e, dt, node, config) {
+                                if (table_operations.select_id_action > 0) {
+                                    panel.open(table_operations.select_id_action);
+                                }
+
+                            },
+                            enabled: false
+                        },
+                        {
+                            text: 'Удалить',
+                            action: function (e, dt, node, config) {
+                                confirm.open('Удалить?', 'Вы действительно хотите удалить строку?', function (result) {
+                                    if (result) {
+                                        // Удалить
+                                        LOC_API.deleteTabActions(table_operations.select_id_action, function (result_del) {
+                                            if (result_del !== null && result_del > 0) {
+                                                // Ок, удалили строку
+                                                // сбросим выбор и кнопки
+                                                table_operations.select_id_action = null;
+                                                table_operations.obj.button(3).enable(false);
+                                                table_operations.obj.button(4).enable(false);
+                                                panel.modal.modal('hide'); // Закроем
+                                                table_operations.load(table_locomotives.select_id_repair);
+                                            } else {
+                                                // Error, ошибка.
+                                                alert.out_error_message("Ошибка удаления записи «Работа по тепловозу»");
+                                            }
+                                        });
+                                    }
+                                });
+                            },
+                            enabled: false
                         }
 
                     ],
+                }).on('select', function (e, dt, type, indexes) {
+                    var rowData = table_operations.obj.rows(indexes).data().toArray();
+                    var id = rowData && rowData.length > 0 ? rowData[0].idAction : null;
+                    table_operations.select_id_action = id; // Запомним выбраную строку
+                    // Обновим кнопку добавить
+                    if (table_operations.select_id_action > 0) {
+                        table_operations.obj.button(3).enable(true);
+                        table_operations.obj.button(4).enable(true);
+                    } else {
+                        table_operations.obj.button(3).enable(false);
+                        table_operations.obj.button(4).enable(false);
+                    }
+                }).on('deselect', function (e, dt, type, indexes) {
+                    table_operations.select_id_action = null; // Запомним выбраную строку
+                    table_operations.obj.button(3).enable(false);
+                    table_operations.obj.button(4).enable(false);
                 });
             },
             // Показать таблицу с данными
@@ -454,7 +707,7 @@
             // Загрузить данные
             load: function (id) {
                 LockScreen('Мы обрабатываем ваш запрос...');
-                LOC_API.getTabActionsOfID(id, function (data) {
+                LOC_API.getTabActionsOfIDRepair(id, function (data) {
                     table_operations.list = data;
                     table_operations.view(data);
                 });
@@ -479,6 +732,7 @@
     //});
     // Загрузим справочники
     loadReference(function () {
+        confirm.init();
         panel.init();
         table_locomotives.init();
         table_operations.init();

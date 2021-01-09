@@ -10,15 +10,22 @@ namespace WEB_UI.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Title = "Home Page";
-
             return View();
         }
-
+        /// <summary>
+        /// Начальник ДЕПО
+        /// </summary>
+        /// <returns></returns>
         public ActionResult HeadDEPO()
         {
-            ViewBag.Title = "Home Page";
-
+            return View();
+        }
+        /// <summary>
+        /// Начальник смены
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ShiftSupervisor()
+        {
             return View();
         }
 

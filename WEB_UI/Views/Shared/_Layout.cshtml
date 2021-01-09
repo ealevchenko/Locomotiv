@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -25,21 +25,14 @@
                         <a class="nav-link" href='@Url.Action("Index", "Home", new { Area = "" })'>Locomotive <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Features</a>
+                        <a class="nav-link" href="#">Начальник цеха</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Pricing</a>
+                        <a class="nav-link" href='@Url.Action("HeadDEPO", "Home", new { Area = "" })'>Начальник ДЕПО</a>
                     </li>
-                    @*<li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Dropdown link
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                            </div>
-                        </li>*@
+                    <li class="nav-item">
+                        <a class="nav-link" href='@Url.Action("ShiftSupervisor", "Home", new { Area = "" })'>Начальник смены</a>
+                    </li>
                 </ul>
             </div>
         </nav>
