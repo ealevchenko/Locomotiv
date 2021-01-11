@@ -1,0 +1,89 @@
+﻿@{
+    ViewBag.Title = "Начальник цеха";
+}
+
+@section styles {
+    @Styles.Render("~/DataTables/css")
+    @Styles.Render("~/DateTime/css")
+    @*<link rel="stylesheet" type="text/css" href="~/Content/report/report.css">*@
+}
+
+@section scripts {
+
+    @*<script>
+            $('body').addClass('img-header-global');
+            $('#page-width').addClass('average');
+        </script>*@
+
+    @Scripts.Render("~/bundles/Ajax")
+    @Scripts.Render("~/bundles/Moment")
+    @Scripts.Render("~/bundles/DataTables")
+    @Scripts.Render("~/bundles/DateTime")
+
+    <script src="~/Scripts/view/common.js" type="text/javascript"></script>
+    <script src="~/Scripts/view/api_locomotiv.js" type="text/javascript"></script>
+    <script src="~/Scripts/view/foreman.js" type="text/javascript"></script>
+}
+
+<div class="modal fade" id="modal_confirm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="title_confirm"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="message_confirm"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="ok">Ok</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card border-secondary mb-3">
+            <div class="card-header bg-secondary text-white">
+                <h3 id="header_title">Текущее положение</h3>
+            </div>
+            <div class="card-body">
+                <table class='display compact hover row-border' id="list-locomotives" style="width:100%;"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card border-primary mb-3">
+            <div class="card-header bg-primary text-white">
+                @*<h3 id="header_title">Отчетность за период</h3>*@
+                <form class="form-inline">
+                    <div class="form-group ml-2">
+                        <label for="select_report" class="control-label">Статистика по :</label>
+                        <select class="form-control form-control-sm ml-2" id="select_report" name="select_report"></select>
+                    </div>
+                    <div class="form-group ml-2">
+                        <label for="select_object" class="control-label"> - </label>
+                        <select class="form-control form-control-sm ml-2" id="select_object" name="select_object"></select>
+                    </div>
+                    <div class="form-group ml-2">
+                        <label class="control-label">За период :</label>
+                        <span id="select-range-date" class="ml-2">
+                            <input class="form-control form-control-sm" id="date-start" name="date-start" style="width:150px;">
+                            <input class="form-control form-control-sm" id="date-stop" name="date-stop" style="width:150px;">
+                        </span>
+                    </div>
+                    <button type="button" class="btn btn-warning btn-sm ml-2" id="bt-right"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>Ок</button>
+                </form>
+            </div>
+            <div class="card-body">
+                <table class='display compact hover row-border' id="reports" style="width:100%;"></table>
+            </div>
+        </div>
+    </div>
+</div>

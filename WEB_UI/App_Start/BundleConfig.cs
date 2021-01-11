@@ -65,6 +65,13 @@ namespace WEB_UI
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/site.css"
                       ));
+            // Календарь -------------------------------------------------------------
+            bundles.Add(new ScriptBundle("~/bundles/DateTime").Include(
+                //"~/Scripts/DateTime/moment.min.js"
+                "~/Scripts/DateTime/jquery.daterangepicker.min.js"
+                ));
+
+            bundles.Add(new StyleBundle("~/DateTime/css").Include("~/Content/DateTime/daterangepicker.css"));
         }
     }
 }

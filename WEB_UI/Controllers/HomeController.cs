@@ -28,6 +28,14 @@ namespace WEB_UI.Controllers
         {
             return View();
         }
+        /// <summary>
+        /// Начальник цеха
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Foreman()
+        {
+            return View();
+        }
 
     }
 
