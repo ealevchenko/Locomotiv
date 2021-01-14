@@ -433,3 +433,30 @@ LOCOMOTIVE_API.prototype.getLnkUDOOfID = function (id, callback) {
         },
     });
 };
+
+/* ----------------------------------------------------------
+    Reports - Отчеты
+-------------------------------------------------------------*/
+// 
+LOCOMOTIVE_API.prototype.getReportRepairsOfLokomotive = function (id, start, stop, callback) {
+    $.ajax({
+        type: 'GET',
+        url: '../../api/reports/repairs_lokomotive/id/' + id + '/start/' + toISOStringTZ(start).substring(0, 19) + '/stop/' + toISOStringTZ(stop).substring(0, 19),
+        async: true,
+        dataType: 'json',
+        beforeSend: function () {
+            AJAXBeforeSend();
+        },
+        success: function (data) {
+            if (typeof callback === 'function') {
+                callback(data);
+            }
+        },
+        error: function (x, y, z) {
+            OnAJAXError("LOCOMOTIVE_API.getReportRepairsOfLokomotive", x, y, z);
+        },
+        complete: function () {
+            AJAXComplete();
+        },
+    });
+};

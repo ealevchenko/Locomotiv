@@ -171,6 +171,7 @@
     <Compile Include="Controllers\RefNumLokoController.cs" />
     <Compile Include="Controllers\RefSystemsController.cs" />
     <Compile Include="Controllers\RefDamageController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\TabActionsController .cs" />
     <Compile Include="Controllers\TabRepairsController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
@@ -448,6 +449,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
+    <Folder Include="Views\Report\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

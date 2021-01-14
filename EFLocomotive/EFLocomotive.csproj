@@ -73,15 +73,15 @@
     <Compile Include="Entities\RefUnit.cs" />
     <Compile Include="Entities\TabActions.cs" />
     <Compile Include="Entities\TabRepairs.cs" />
+    <Compile Include="Model\Model1.cs" />
+    <Compile Include="Model\status_repairs_lokomotive.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

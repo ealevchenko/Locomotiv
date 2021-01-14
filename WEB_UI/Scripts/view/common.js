@@ -223,3 +223,8 @@ ALERT.prototype.out_info_message = function (message) {
         }
     }
 };
+
+// Коррекция вывода даты с учетом зоны
+var toISOStringTZ = function (date) {
+    return date ? new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString() : null;
+};
