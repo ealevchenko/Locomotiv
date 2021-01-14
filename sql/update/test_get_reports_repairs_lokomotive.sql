@@ -1,0 +1,2 @@
+select * from [dbo].[get_reports_repairs_lokomotive]() 
+where idNumLoko = 1 and [DateTimeStartRepair] >= Convert(datetime, '2020-10-01 00:00:00.000',120) and [DateTimeStartRepair] <= Convert(datetime, '2020-10-30 00:00:00.000',120)
