@@ -73,15 +73,25 @@
                     <div class="form-group ml-2">
                         <label class="control-label">За период :</label>
                         <span id="select-range-date" class="ml-2">
-                            <input class="form-control form-control-sm" id="date-start" name="date-start" style="width:150px;">
-                            <input class="form-control form-control-sm" id="date-stop" name="date-stop" style="width:150px;">
+                            <input class="form-control form-control-sm" id="date-start" name="date-start" style="width:130px;">
+                            <input class="form-control form-control-sm" id="date-stop" name="date-stop" style="width:130px;">
                         </span>
                     </div>
                     <button type="button" class="btn btn-warning btn-sm ml-2" id="bt-view"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>Ок</button>
                 </form>
             </div>
             <div class="card-body">
-                <table class='display compact hover row-border' id="list_repairs_lokomotive" style="width:100%;"></table>
+                <div class="row">
+                    <div class="col-xl-12" id="report_repairs_lokomotive">
+                        <table class='display compact hover row-border' id="list_repairs_lokomotive" style="width:100%;"></table>
+                    </div>
+                    <div class="col-xl-12" id="report_unit_lokomotive">
+                        <table class='display compact hover row-border' id="list_unit_lokomotive" style="width:100%;"></table>
+                    </div>
+                    <div class="col-xl-12" id="report_damage_lokomotive">
+                        <table class='display compact hover row-border' id="list_damage_lokomotive" style="width:100%;"></table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

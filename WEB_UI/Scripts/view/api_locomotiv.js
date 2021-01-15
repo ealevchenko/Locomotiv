@@ -460,3 +460,49 @@ LOCOMOTIVE_API.prototype.getReportRepairsOfLokomotive = function (id, start, sto
         },
     });
 };
+//
+LOCOMOTIVE_API.prototype.getReportUnitOfLokomotivee = function (id, start, stop, callback) {
+    $.ajax({
+        type: 'GET',
+        url: '../../api/reports/unit_lokomotive/id/' + id + '/start/' + toISOStringTZ(start).substring(0, 19) + '/stop/' + toISOStringTZ(stop).substring(0, 19),
+        async: true,
+        dataType: 'json',
+        beforeSend: function () {
+            AJAXBeforeSend();
+        },
+        success: function (data) {
+            if (typeof callback === 'function') {
+                callback(data);
+            }
+        },
+        error: function (x, y, z) {
+            OnAJAXError("LOCOMOTIVE_API.getReportUnitOfLokomotivee", x, y, z);
+        },
+        complete: function () {
+            AJAXComplete();
+        },
+    });
+};
+//
+LOCOMOTIVE_API.prototype.getReportDamageOfLokomotive = function (id, start, stop, callback) {
+    $.ajax({
+        type: 'GET',
+        url: '../../api/reports/damage_lokomotive/id/' + id + '/start/' + toISOStringTZ(start).substring(0, 19) + '/stop/' + toISOStringTZ(stop).substring(0, 19),
+        async: true,
+        dataType: 'json',
+        beforeSend: function () {
+            AJAXBeforeSend();
+        },
+        success: function (data) {
+            if (typeof callback === 'function') {
+                callback(data);
+            }
+        },
+        error: function (x, y, z) {
+            OnAJAXError("LOCOMOTIVE_API.getReportDamageOfLokomotive", x, y, z);
+        },
+        complete: function () {
+            AJAXComplete();
+        },
+    });
+};

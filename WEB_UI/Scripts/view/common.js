@@ -228,3 +228,8 @@ ALERT.prototype.out_info_message = function (message) {
 var toISOStringTZ = function (date) {
     return date ? new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString() : null;
 };
+
+// Убрать Т из формата даты ISO
+var getReplaceTOfDT = function (date) {
+    return date !== null ? date.replace(/T/g, ' ') : null;
+};

@@ -20,8 +20,12 @@ namespace WEB_UI.Controllers
         public int? repair { get; set; }
         public int? idAction { get; set; }
         public int? IDLnkUDO { get; set; }
+        public DateTime? DateActiion { get; set; }
+        public int? idUnit { get; set; }
         public string Unit { get; set; }
         public string Operation { get; set; }
+        public int? idDamage { get; set; }
+        public string Damage { get; set; }
         public float? HRresourse { get; set; }
     }
 
@@ -55,5 +59,50 @@ namespace WEB_UI.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        // GET: api/reports/unit_lokomotive/id/2/start/2020-10-01T00:00:00/stop/2020-10-30T23:59:59
+        /// <summary>
+        /// Показать запись по id тепловоза в ДЕПО
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Route("unit_lokomotive/id/{id:int}/start/{start:datetime}/stop/{stop:datetime}")]
+        [ResponseType(typeof(report_repairs_lokomotive))]
+        public IHttpActionResult GetReportUnitOfLokomotive(int id, DateTime start, DateTime stop)
+        {
+            try
+            {
+                string sql = "select * from [dbo].[get_reports_repairs_lokomotive]() where idUnit = " + id.ToString() + " AND [DateTimeStartRepair] >= Convert(datetime, '" + start.ToString("yyyy-MM-dd HH:mm:ss") + "',120) AND [DateTimeStartRepair] <= Convert(datetime, '" + stop.ToString("yyyy-MM-dd HH:mm:ss") + "',120)";
+                List<report_repairs_lokomotive> list = ef_contex.Database.SqlQuery<report_repairs_lokomotive>(sql).ToList();
+                return Ok(list);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        // GET: api/reports/damage_lokomotive/id/2/start/2020-10-01T00:00:00/stop/2020-10-30T23:59:59
+        /// <summary>
+        /// Показать запись по id тепловоза в ДЕПО
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Route("damage_lokomotive/id/{id:int}/start/{start:datetime}/stop/{stop:datetime}")]
+        [ResponseType(typeof(report_repairs_lokomotive))]
+        public IHttpActionResult GetReportDamageOfLokomotive(int id, DateTime start, DateTime stop)
+        {
+            try
+            {
+                string sql = "select * from [dbo].[get_reports_repairs_lokomotive]() where idDamage = " + id.ToString() + " AND [DateTimeStartRepair] >= Convert(datetime, '" + start.ToString("yyyy-MM-dd HH:mm:ss") + "',120) AND [DateTimeStartRepair] <= Convert(datetime, '" + stop.ToString("yyyy-MM-dd HH:mm:ss") + "',120)";
+                List<report_repairs_lokomotive> list = ef_contex.Database.SqlQuery<report_repairs_lokomotive>(sql).ToList();
+                return Ok(list);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
     }
 }

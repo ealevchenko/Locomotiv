@@ -35,6 +35,7 @@
             },
 
         },
+        // Отчет
         table_repairs_lokomotive = {
             html_table: $('#list_repairs_lokomotive'),
             obj: null,
@@ -44,12 +45,12 @@
             // Инициализировать таблицу
             init: function () {
                 table_repairs_lokomotive.obj = this.html_table.DataTable({
-                    "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-                    "pageLength": 10,
-                    "paging": true,
-                    "searching": true,
+                    //"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                    //"pageLength": 10,
+                    "paging": false,
+                    "searching": false,
                     "ordering": true,
-                    "info": false,
+                    "info": true,
                     select: false,
                     "autoWidth": true,
                     //"filter": true,
@@ -63,21 +64,45 @@
                     columns: [
                         {
                             data: function (row, type, val, meta) {
-                                return row.NumLoko;
+                                return meta.row+1;
                             },
-                            title: 'Тип и номер тепловоза', width: "100px", orderable: true, searchable: false
+                            title: '№п.п', width: "50px", orderable: true, searchable: false
                         },
                         {
                             data: function (row, type, val, meta) {
-                                return row.idRepair !== null ? 'ремонт' : 'эксплуатация';
+                                return getReplaceTOfDT(row.DateTimeStartRepair);
                             },
-                            title: 'Статус', width: "150px", orderable: true, searchable: false
+                            title: 'Дата захода в ремонт', width: "150px", orderable: true, searchable: false
+                        },
+                        {
+                            data: function (row, type, val, meta) {
+                                return getReplaceTOfDT(row.DateTimeEndRepair);
+                            },
+                            title: 'Дата выхода из ремонта', width: "150px", orderable: true, searchable: false
                         },
                         {
                             data: function (row, type, val, meta) {
                                 return row.repair;
                             },
                             title: 'Продол. ремонта (ч)', width: "100px", orderable: true, searchable: false
+                        },
+                        {
+                            data: function (row, type, val, meta) {
+                                return row.Unit;
+                            },
+                            title: 'Ремонтируемый агрегат', width: "150px", orderable: true, searchable: false
+                        },
+                        {
+                            data: function (row, type, val, meta) {
+                                return row.Operation;
+                            },
+                            title: 'Операция', width: "150px", orderable: true, searchable: false
+                        },
+                        {
+                            data: function (row, type, val, meta) {
+                                return row.HRresourse;
+                            },
+                            title: 'Чел.часы', width: "150px", orderable: true, searchable: false
                         },
                     ],
                     dom: 'Bfrtip',
@@ -118,6 +143,193 @@
                 });
             },
         },
+        // Отчет
+        table_unit_lokomotive = {
+            html_table: $('#list_unit_lokomotive'),
+            obj: null,
+            list: null,
+            select_locomotive: null,                // Выбраная строка локомотива
+            id_locomotive_repair: null,             // Выбраная id ремонта локомотива
+            // Инициализировать таблицу
+            init: function () {
+                table_unit_lokomotive.obj = this.html_table.DataTable({
+                    //"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                    //"pageLength": 10,
+                    "paging": false,
+                    "searching": false,
+                    "ordering": true,
+                    "info": true,
+                    select: false,
+                    "autoWidth": true,
+                    //"filter": true,
+                    //"scrollY": "600px",
+                    sScrollX: "100%",
+                    scrollX: true,
+                    //"filter": true,
+                    //"scrollY": "600px",
+                    language: language_table(),
+                    jQueryUI: false,
+                    columns: [
+                        {
+                            data: function (row, type, val, meta) {
+                                return meta.row+1;
+                            },
+                            title: '№п.п', width: "50px", orderable: true, searchable: false
+                        },
+                        {
+                            data: function (row, type, val, meta) {
+                                return row.NumLoko;
+                            },
+                            title: '№ тепловоза', width: "100px", orderable: true, searchable: false
+                        },
+                        {
+                            data: function (row, type, val, meta) {
+                                return row.Operation;
+                            },
+                            title: 'Операция', width: "150px", orderable: true, searchable: false
+                        },
+                        {
+                            data: function (row, type, val, meta) {
+                                return row.HRresourse;
+                            },
+                            title: 'Чел.часы', width: "150px", orderable: true, searchable: false
+                        },
+                    ],
+                    dom: 'Bfrtip',
+                    stateSave: false,
+                    buttons: [
+                        {
+                            text: 'Буфер',
+                            extend: 'copyHtml5',
+                        },
+                        {
+                            text: 'Excel',
+                            extend: 'excelHtml5',
+                            sheetName: 'Агрегаты',
+                            messageTop: function () {
+                                return '';
+                            }
+                        }
+                    ],
+                });
+            },
+            // Показать таблицу с данными
+            view: function (data) {
+                table_unit_lokomotive.obj.clear();
+                table_unit_lokomotive.obj.rows.add(data);
+                table_unit_lokomotive.obj.draw();
+                LockScreenOff();
+
+            },
+            // Загрузить данные
+            load: function (id) {
+                LockScreen('Мы обрабатываем ваш запрос...');
+                LOC_API.getReportUnitOfLokomotivee(id, date_start, date_stop, function (data) {
+                    if (data !== null && data.length > 0) {
+                        table_unit_lokomotive.view(data);
+                    } else {
+                        table_unit_lokomotive.view([]);
+                    }
+                });
+            },
+        },
+        // Отчет
+        table_damage_lokomotive = {
+            html_table: $('#list_damage_lokomotive'),
+            obj: null,
+            list: null,
+            select_locomotive: null,                // Выбраная строка локомотива
+            id_locomotive_repair: null,             // Выбраная id ремонта локомотива
+            // Инициализировать таблицу
+            init: function () {
+                table_damage_lokomotive.obj = this.html_table.DataTable({
+                    //"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                    //"pageLength": 10,
+                    "paging": false,
+                    "searching": false,
+                    "ordering": true,
+                    "info": true,
+                    select: false,
+                    "autoWidth": true,
+                    //"filter": true,
+                    //"scrollY": "600px",
+                    sScrollX: "100%",
+                    scrollX: true,
+                    //"filter": true,
+                    //"scrollY": "600px",
+                    language: language_table(),
+                    jQueryUI: false,
+                    columns: [
+                        {
+                            data: function (row, type, val, meta) {
+                                return meta.row+1;
+                            },
+                            title: '№п.п', width: "50px", orderable: true, searchable: false
+                        },
+                        {
+                            data: function (row, type, val, meta) {
+                                return row.NumLoko;
+                            },
+                            title: '№ тепловоза', width: "100px", orderable: true, searchable: false
+                        },
+                        {
+                            data: function (row, type, val, meta) {
+                                return getReplaceTOfDT(row.DateActiion);
+                            },
+                            title: 'Дата операции', width: "150px", orderable: true, searchable: false
+                        },
+                        {
+                            data: function (row, type, val, meta) {
+                                return row.Operation;
+                            },
+                            title: 'Операция', width: "150px", orderable: true, searchable: false
+                        },
+                        {
+                            data: function (row, type, val, meta) {
+                                return row.HRresourse;
+                            },
+                            title: 'Чел.часы', width: "150px", orderable: true, searchable: false
+                        },
+                    ],
+                    dom: 'Bfrtip',
+                    stateSave: false,
+                    buttons: [
+                        {
+                            text: 'Буфер',
+                            extend: 'copyHtml5',
+                        },
+                        {
+                            text: 'Excel',
+                            extend: 'excelHtml5',
+                            sheetName: 'Неисправности',
+                            messageTop: function () {
+                                return '';
+                            }
+                        }
+                    ],
+                });
+            },
+            // Показать таблицу с данными
+            view: function (data) {
+                table_damage_lokomotive.obj.clear();
+                table_damage_lokomotive.obj.rows.add(data);
+                table_damage_lokomotive.obj.draw();
+                LockScreenOff();
+
+            },
+            // Загрузить данные
+            load: function (id) {
+                LockScreen('Мы обрабатываем ваш запрос...');
+                LOC_API.getReportDamageOfLokomotive(id, date_start, date_stop, function (data) {
+                    if (data !== null && data.length > 0) {
+                        table_damage_lokomotive.view(data);
+                    } else {
+                        table_damage_lokomotive.view([]);
+                    }
+                });
+            },
+        },
+
         reports = {
             select_report: $('select#select_report'),
             select_object: $('select#select_object'),
@@ -130,17 +342,30 @@
             bt_view : $('button#bt-view').on('click',
                 function (event) {
                     event.preventDefault();
+                    $('div#report_repairs_lokomotive').hide();
+                    $('div#report_unit_lokomotive').hide();
+                    $('div#report_damage_lokomotive').hide();
+
                     var report = Number(reports.select_report.val());
                     var object = Number(reports.select_object.val());
                     if (report === 1 && object> 0) {
                         table_repairs_lokomotive.load(object);
+                        $('div#report_repairs_lokomotive').show();
+                    }
+                    if (report === 2 && object> 0) {
+                        table_unit_lokomotive.load(object);
+                        $('div#report_unit_lokomotive').show();
+                    }
+                    if (report === 3 && object> 0) {
+                        table_damage_lokomotive.load(object);
+                        $('div#report_damage_lokomotive').show();
                     }
                 }),
             init: function () {
                 // Настроим выбор отчета
                 reports.select_report = cd_initSelect(
                     reports.select_report,
-                    [{ value: 1, text: "Тепловозу" }, { value: 2, text: "Агрегату" }, { value: 2, text: "Неисправности" }],
+                    [{ value: 1, text: "Тепловозу" }, { value: 2, text: "Агрегату" }, { value: 3, text: "Неисправности" }],
                     null,
                     -1,
                     function (event, ui) {
@@ -225,6 +450,9 @@
                 date_start = moment(date_curent).set({ 'hour': 0, 'minute': 0, 'second': 0, 'millisecond': 0 })._d;
                 date_stop = moment(date_curent).set({ 'hour': 23, 'minute': 59, 'second': 59, 'millisecond': 0 })._d;
                 reports.obj_date_range.data('dateRangePicker').setDateRange(moment(date_start).format('DD.MM.YYYY HH:mm:'), moment(date_stop).format('DD.MM.YYYY HH:mm:'), true);
+                $('div#report_repairs_lokomotive').hide();
+                $('div#report_unit_lokomotive').hide();
+                $('div#report_damage_lokomotive').hide();
             },
         },
         // Справочники
@@ -298,7 +526,8 @@
         confirm.init();
         reports.init();
         table_repairs_lokomotive.init();
-        //table_locomotives.load();
+        table_unit_lokomotive.init();
+        table_damage_lokomotive.init();
     });
 
 
