@@ -8,9 +8,12 @@ SELECT nl.[idNumLoko]
 	  ,[repair] = DATEDIFF(hour,rep.[DateTimeStartRepair], GETDATE())
 	  ,act.[idAction]
       ,act.[IDLnkUDO]
-      --,act.[DateActiion]
+      ,act.[DateActiion]
+	  ,U.idUnit
 	  ,U.[Unit]
 	  ,O.[Operation]
+	  ,D.idDamage
+	  ,D.Damage
       ,act.[HRresourse]
 	  --into status_repairs_lokomotive
   FROM [loko_nw].[dbo].[RefNumLoko] as nl LEFT JOIN
@@ -18,4 +21,5 @@ SELECT nl.[idNumLoko]
   [loko_nw].[dbo].[TabActions] as act ON act.[IDRepair] = rep.[idRepair] LEFT JOIN 
   [loko_nw].[dbo].[LnkUDO] as lnk ON lnk.[idLinkUDO] = act.[IDLnkUDO] LEFT JOIN 
   [loko_nw].[dbo].[RefUnit] as U ON U.[idUnit] = lnk.[IDUnit] LEFT JOIN 
-  [loko_nw].[dbo].[RefOperation] as O ON O.[idOperation] = lnk.[IDOperation]
+  [loko_nw].[dbo].[RefOperation] as O ON O.[idOperation] = lnk.[IDOperation] LEFT JOIN
+  [loko_nw].[dbo].[RefDamage] as D ON D.[idDamage] = lnk.[IDDamage]
