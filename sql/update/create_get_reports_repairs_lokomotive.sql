@@ -1,12 +1,13 @@
 USE [loko_nw]
 GO
 
-/****** Object:  UserDefinedFunction [dbo].[get_reports_repairs_lokomotive]    Script Date: 15.01.2021 22:38:19 ******/
+/****** Object:  UserDefinedFunction [dbo].[get_reports_repairs_lokomotive]    Script Date: 18.01.2021 9:50:06 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
+
 
 
 
@@ -51,7 +52,7 @@ CREATE FUNCTION [dbo].[get_reports_repairs_lokomotive]
 				  ,act.[HRresourse]
 				  --into status_repairs_lokomotive
 			  FROM [loko_nw].[dbo].[RefNumLoko] as nl LEFT JOIN
-			  [loko_nw].[dbo].[TabRepairs] as rep ON rep.[idRepair] = (SELECT top(1) [idRepair]  FROM [loko_nw].[dbo].[TabRepairs] where [DateTimeEndRepair] is not null and [IDNumLoko] =nl.[idNumLoko]) LEFT JOIN
+			  [loko_nw].[dbo].[TabRepairs] as rep ON rep.[idRepair] = (SELECT top(1) [idRepair]  FROM [loko_nw].[dbo].[TabRepairs] where [IDNumLoko] =nl.[idNumLoko]) LEFT JOIN
 			  [loko_nw].[dbo].[TabActions] as act ON act.[IDRepair] = rep.[idRepair] LEFT JOIN 
 			  [loko_nw].[dbo].[LnkUDO] as lnk ON lnk.[idLinkUDO] = act.[IDLnkUDO] LEFT JOIN 
 			  [loko_nw].[dbo].[RefUnit] as U ON U.[idUnit] = lnk.[IDUnit] LEFT JOIN 
@@ -59,6 +60,7 @@ CREATE FUNCTION [dbo].[get_reports_repairs_lokomotive]
 			  [loko_nw].[dbo].[RefDamage] as D ON D.[idDamage] = lnk.[IDDamage]
   RETURN
  END
+
 
 GO
 
